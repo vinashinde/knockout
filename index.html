@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+.left_margin{
+    margin-left:10px;
+    margin-right:10px;
+    }
+    </style>
+</head>
+<body>
+ <table class=table table-hover table-bordered>
+
+     
+     <thead> 
+             <tr data-bind="foreach: columns">
+                    <th>
+                        <div class="sortable" data-bind="click: $root.sortClick.bind(property)">
+                            <span data-bind="html: header"></span><i data-bind="css: state"></i>
+                        </div>
+                    </th>
+                </tr>
+         </thead> 
+
+     
+     
+     
+     
+     
+     
+     
+     
+	<tbody data-bind="foreach:employees">
+		<tr>
+			<td data-bind="text: $data.firstName"></td>
+			<td data-bind="text: $data.lastName"></td>
+            <td data-bind="text: $data.Email"></td>
+            <td data-bind="text: $data.doj"></td>
+            <td data-bind="text: $data.Extension"></td>
+            <td data-bind="text: $data.IsonBench"></td>
+            <td> <a href="#"  data-bind="click: $parent.displayEmp" >Edit</a>
+                <a href="#"   data-bind="click: $parent.removeEmp" >Delete</a>
+            </td>
+        </tr>
+ </table>
+    <button type="button" class="btn btn-primary left_margin" data-bind= "click:add">Add</button>
+
+<div data-bind="visible:visibility">
+    <h3>Record</h3>
+     <div class="row">
+     <input type="text" class="form-control left_margin "  data-bind= "value:fname()"><br>
+     </div>
+     <div class="row">
+        <input type="text" class="form-control left_margin" data-bind= "value:lname()"><br>
+     </div>
+    <div class="row">
+    <input type="text" class="form-control left_margin" data-bind= "value:email()"><br>
+    </div>
+    <div class="row">
+    <input type="text" class="form-control left_margin" data-bind= "value:doj1()"><br>
+    </div>
+    <div class="row">
+    <input type="text" class="form-control left_margin"  data-bind= "value:ext()"><br>
+    </div>
+    <div class="row">
+    <input type="text" class="form-control left_margin" data-bind= "value:isob()"><br>
+    </div>
+    <button  class="btn btn-success left_margin" data-bind="visible:visibility , click:edit">Update</button>
+</div>
+    
+    
+  <!-- div for adding record--------------------***-->
+    
+    <div data-bind="visible:visibility_add">
+        <h3>New Record</h3>
+         <div class="row">
+        <input type="text" class="form-control left_margin" placeholder="first name" data-bind= "value:fname1"><br>
+        </div>
+        <div class="row">
+        <input type="text" class="form-control left_margin" placeholder="last name" data-bind= "value:lname1"><br>
+        </div>
+        <div class="row">
+        
+        <input type="email" class="form-control left_margin" id="inputEmail3" placeholder="Email" data-bind= "value:email1"><br>
+        </div>
+        <div class="row">
+        <input type="text" class="form-control left_margin" placeholder="Extension" data-bind= "value:ext1"><br>
+            
+        </div>
+        <div class="row">
+        <input type="date" class="form-control left_margin" placeholder="date of joining"  data-bind= "value:doj11"><br>
+        </div>
+        <div class="row">
+        <input type="text" class="form-control left_margin" placeholder="is on bench"
+               data-bind= "value:isob1"><br>
+        </div>
+        <button  class="btn btn-success left_margin" data-bind=" click:add1">save</button>
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="http://knockoutjs.com/downloads/knockout-3.4.0.js"></script>
+<script src="knockout.mapping.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+          
+    
+           $.getJSON("person.json", function(result)
+            {
+                function viewmodel(){
+                    var self=this;
+                    self.location=ko.observable();
+                    self.newemp=ko.observable();
+                    self.emp=ko.observable("");
+                    self.fname=ko.observable("");
+                    self.lname=ko.observable("");
+                    self.email=ko.observable();
+                    self.doj1=ko.observable();
+                    self.ext=ko.observable();
+                    self.isob=ko.observable();
+                    
+                   
+                    self.fname1=ko.observable("");
+                    self.lname1=ko.observable("");
+                    self.email1=ko.observable();
+                    self.doj11=ko.observable();
+                    self.ext1=ko.observable();
+                    self.isob1=ko.observable();
+                    
+                    
+                   // console.log("------------------");
+                   // console.log(employee.IsonBench());
+                    
+                    
+                    
+                    self.visibility=ko.observable(false);
+                     self.visibility_add=ko.observable(false);
+                    
+                    
+
+                    
+                     self.columns = ko.observableArray([ 
+               { property: "firstName", header: "First Name", type: "string", state: ko.observable("") }, 
+                 { property: "lastName", header: "Last Name", type: "string", state: ko.observable("") }, 
+                { property: "Email", header: "email", type: "string", state: 
+                   ko.observable("") }, 
+                 { property: "doj", header: "Date of joining", type: "string", state: ko.observable("") }, 
+                 { property: "Extension", header: "Extension", type: "number", state: ko.observable("") }, 
+                 { property: "IsonBench", header: "Is On Bench", type: "string", state: ko.observable("") }, 
+                 
+            ]); 
+
+                    
+                    
+                    
+                    
+                    self.data=ko.observable(" ");
+                    ko.mapping.fromJS(result,{},self);
+                    console.log(self.employees());
+                   
+                    
+                     self.removeEmp = function(emp) 
+                     {
+                         var remove=confirm("are you sure you want to delete record?");
+                         if(remove==true)
+                         {   self.employees.remove(emp);
+                         }
+                         else{return;}
+                     }
+                    
+                     
+                     
+                     self.displayEmp = function(emp) {
+                         self.visibility(true);
+                        self.location(self.employees.indexOf(emp));
+                         console.log(self.location());
+                        self.fname(emp.firstName);
+                        self.lname(emp.lastName);
+                        self.email(emp.Email);
+                        self.doj1(emp.doj);
+                          self.ext(emp.Extension);
+                          self.isob(emp.IsonBench);
+               
+                
+            }
+                     
+                    self.edit=function(emp)
+                     {
+                        self.employees.replace(self.employees()[self.location()], 
+                           {
+                            firstName: self.fname(),
+                            lastName: self.lname(),
+                            Email: self.email(),
+                            Extension:self.ext(),
+                            doj:self.doj1(),
+                           IsonBench:self.isob()
+                        
+                        });
+                        
+                     }
+                     
+                    
+                     self.add=function(){
+                         self.visibility_add(true);
+                         self.visibility(false);
+                         
+                     }
+                     
+                     self.add1=function(){
+                           ;
+                           console.log(self.fname1());
+                            self.employees.push({
+                            firstName:ko.observable(self.fname1()),
+                            lastName:ko.observable(self.lname1()),
+                            Email:ko.observable(self.email1()),
+                            doj:ko.observable(self.doj11()),
+                            Extension:ko.observable(self.ext1()),
+                            IsonBench:ko.observable(self.isob1())
+                        });
+                           self.visibility(false);
+                           self.visibility_add(false);
+                         
+                        // self.employees.push({self.firstName:f});
+                     }
+                     
+               
+                
+               
+ /********************************************************************/              
+          self.textempty= " ";
+                    
+                    self.descending = "fa fa-arrow-down";
+                    self.ascending = "fa fa-arrow-up";
+               
+               self.sortClick = function (column) {
+                        try {
+                            // Call this method to clear the state of any columns OTHER than the target
+                            // so we can keep track of the ascending/descending
+                            self.clearColumnStates(column);
+                            // Get the state of the sort type
+                            if (column.state() === "" || column.state() === self.descending) {
+                                column.state(self.ascending);
+                            }
+                            else {
+                                column.state(self.descending);
+                            }
+                            switch (column.type) {
+                                case "number":
+                                    self.numberSort(column);
+                                    break;
+                                case "date":
+                                    self.dateSort(column);
+                                    break;
+                                case "string":
+                                default:
+                                    self.stringSort(column);
+                                    break;
+                            }
+                        }
+                        catch (err) {
+                            // Always remember to handle those errors that could occur during a user interaction
+                            alert(err);
+                        }
+                };
+                // Sort strings
+                self.stringSort = function (column) { // Pass in the column object
+                    self.employees(self.employees().sort(function (a, b) {
+                        // Set strings to lowercase to sort in a predictive way
+                        //alert(a[column.property]());
+                        var playerA = a[column.property]().toLowerCase(), playerB = b[column.property]().toLowerCase();
+
+                        if (playerA < playerB) {
+                            return (column.state() === self.ascending) ? -1 : 1;
+                        }
+                        
+                        else if (playerA > playerB) {
+                            return (column.state() === self.ascending) ? 1 : -1;
+                        }
+                        
+                        else {
+                            return 0
+                        }
+                    }));
+                };
+                    
+                // Sort numbers
+                self.numberSort = function (column) {
+                    self.employees(self.employees().sort(function (a, b) {
+                        var playerA = a[column.property](), playerB = b[column.property]();
+                        if (column.state() === self.ascending) {
+                            return playerA - playerB;
+                        }
+                        else {
+                            return playerB - playerA;
+                        }
+                    }));
+                };
+                    
+                // Sort by date
+                self.dateSort = function (column) {
+                    self.employees(self.employees().sort(function (a, b) {
+                        if (column.state() === self.ascending) {
+                            return new Date(a[column.property]()) - new Date(b[column.property]());
+                        }
+                        else {
+                            return new Date(b[column.property]()) - new Date(a[column.property]());
+                        }
+                    }));
+                }; 
+                    
+                self.clearColumnStates = function (selectedColumn) {
+                    var otherColumns = self.columns().filter(function (col) {
+                        return col != selectedColumn;
+                    });
+                    for (var i = 0; i < otherColumns.length; i++) {
+                        otherColumns[i].state("");
+                    }
+                };       
+ /************************************************************************************/              }
+               
+               
+                     ko.applyBindings(new viewmodel());
+            });
+                                  
+                                  
+ 
+  
+
+</script>
+</body>
+</html>
+                                  
+                                  
+       
+  
+
